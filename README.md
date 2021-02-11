@@ -1,2 +1,2 @@
-# journal
+# Journal
 Journal desktop application in Java.
