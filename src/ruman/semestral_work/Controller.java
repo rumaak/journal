@@ -1,11 +1,8 @@
 package ruman.semestral_work;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.text.Text;
 
 public class Controller {
     @FXML CustomHTMLEditor editor;
@@ -27,12 +24,18 @@ public class Controller {
             Node node = editor.lookup(".html-editor-foreground");
             if (node instanceof ColorPicker) {
                 node.disabledProperty().addListener((observableValue1, aBoolean1, t11) -> {
-                    editor.add_group_button.setDisable(observableValue1.getValue());
                     editor.save_button.setDisable(observableValue1.getValue());
                     editor.image_button.setDisable(observableValue1.getValue());
+
+                    // TODO these buttons shouldn't be there
+                    editor.add_group_button.setDisable(observableValue1.getValue());
                     editor.add_note_button.setDisable(observableValue1.getValue());
+                    editor.remove_button.setDisable(observableValue1.getValue());
+                    editor.rename_button.setDisable(observableValue1.getValue());
                 });
             }
         });
+
+        // TODO directory chooser
     }
 }
