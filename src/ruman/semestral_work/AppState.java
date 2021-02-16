@@ -1,6 +1,5 @@
 package ruman.semestral_work;
 
-import javax.imageio.IIOException;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -8,11 +7,12 @@ import java.util.HashMap;
 
 import static java.nio.file.Files.walkFileTree;
 
-public class Loader {
+public class AppState {
 
     HashMap<String, String> configuration;
+    FileTree fileTree;
 
-    public Loader() {
+    public AppState() {
         this.configuration = null;
     }
 
@@ -41,7 +41,7 @@ public class Loader {
     }
 
     public void loadTree() {
-        FileTree fileTree = new FileTree("Journal", ElementType.DIRECTORY);
+        fileTree = new FileTree("Journal", ElementType.DIRECTORY);
         Path root = Paths.get(configuration.get("folder"));
         CustomVisitor customVisitor = new CustomVisitor(fileTree, root);
 

@@ -8,6 +8,8 @@ public class Controller {
     @FXML CustomHTMLEditor editor;
     @FXML TreeView<String> note_tree;
 
+    AppState appState;
+
     @FXML
     void initialize() {
         TreeItem<String> root = new TreeItem<>("Root item");
@@ -35,14 +37,14 @@ public class Controller {
             }
         });
 
-        Loader loader = new Loader();
-        loader.loadConfiguration();
-        if (loader.configurationExists()) {
-            loader.loadTree();
-            // TODO pass the data here and do something with them
+        appState = new AppState();
+        appState.loadConfiguration();
+        if (appState.configurationExists()) {
+            appState.loadTree();
+            // TODO stuff into TreeView, put one into HTMLEditor
         } else {
-            // TODO default to something
+            // TODO don't load anything
         }
-        loader.changeConfiguration("test_journal/");
+        appState.changeConfiguration("test_journal/");
     }
 }
