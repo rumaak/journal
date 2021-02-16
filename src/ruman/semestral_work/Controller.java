@@ -6,15 +6,17 @@ import javafx.scene.control.*;
 
 public class Controller {
     @FXML CustomHTMLEditor editor;
-    @FXML TreeView note_tree;
+    @FXML TreeView<String> note_tree;
+
+    AppState appState;
 
     @FXML
     void initialize() {
-        TreeItem root = new TreeItem("Root item");
+        TreeItem<String> root = new TreeItem<>("Root item");
 
-        TreeItem ti1 = new TreeItem("Item 1");
-        TreeItem ti2 = new TreeItem("Item 2");
-        TreeItem ti3 = new TreeItem("Item 3");
+        TreeItem<String> ti1 = new TreeItem<>("Item 1");
+        TreeItem<String> ti2 = new TreeItem<>("Item 2");
+        TreeItem<String> ti3 = new TreeItem<>("Item 3");
 
         note_tree.setRoot(root);
         root.getChildren().addAll(ti1, ti2, ti3);
@@ -27,7 +29,6 @@ public class Controller {
                     editor.save_button.setDisable(observableValue1.getValue());
                     editor.image_button.setDisable(observableValue1.getValue());
 
-                    // TODO these buttons shouldn't be there
                     editor.add_group_button.setDisable(observableValue1.getValue());
                     editor.add_note_button.setDisable(observableValue1.getValue());
                     editor.remove_button.setDisable(observableValue1.getValue());
@@ -36,6 +37,14 @@ public class Controller {
             }
         });
 
-        // TODO directory chooser
+        appState = new AppState();
+        appState.loadConfiguration();
+        if (appState.configurationExists()) {
+            appState.loadTree();
+            // TODO stuff into TreeView, put one into HTMLEditor
+        } else {
+            // TODO don't load anything
+        }
+        appState.changeConfiguration("test_journal/");
     }
 }
