@@ -9,8 +9,6 @@ import javafx.scene.text.Text;
 
 public class Controller {
     @FXML CustomHTMLEditor editor;
-    @FXML Button test_but;
-    @FXML Text test_text;
     @FXML TreeView note_tree;
 
     @FXML
@@ -32,14 +30,9 @@ public class Controller {
                     editor.add_group_button.setDisable(observableValue1.getValue());
                     editor.save_button.setDisable(observableValue1.getValue());
                     editor.image_button.setDisable(observableValue1.getValue());
+                    editor.add_note_button.setDisable(observableValue1.getValue());
                 });
             }
         });
     }
-
-    @FXML
-    void handleTestButtClick() {
-        test_text.setText("curious");
-    }
-
 }

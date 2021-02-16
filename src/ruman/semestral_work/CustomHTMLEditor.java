@@ -23,7 +23,7 @@ import java.nio.file.Paths;
 import static java.nio.file.StandardOpenOption.CREATE;
 
 public class CustomHTMLEditor extends HTMLEditor {
-    Button save_button, image_button, add_group_button;
+    Button save_button, image_button, add_group_button, add_note_button;
 
     public CustomHTMLEditor() {
         try {
@@ -55,8 +55,9 @@ public class CustomHTMLEditor extends HTMLEditor {
                 insertHtmlAfterCursor("<img src=\"" + "file:" + selectedFile + "\" alt=\"retard\" style=\"max-width: 704; max-height: 324\">");
             });
 
-            // This button might get moved elsewhere
+            // These buttons might get moved elsewhere
             add_group_button = addButton("add_group_btn.png", arg0 -> System.out.println("Added a group"));
+            add_note_button = addButton("add_note_btn.png", arg0 -> System.out.println("Added a note"));
         } catch (IOException e) {
             e.printStackTrace();
         }
