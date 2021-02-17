@@ -2,14 +2,21 @@ package ruman.semestral_work;
 
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import static java.nio.file.StandardOpenOption.CREATE;
 
 public class Controller {
     @FXML Button add_group_button1;
@@ -23,6 +30,8 @@ public class Controller {
 
     @FXML
     void initialize() {
+        setupAppState();
+
         try {
             setupTreeViewButtons();
         } catch (IOException e) {
@@ -30,21 +39,6 @@ public class Controller {
         }
 
         setupEditor();
-
-        appState = new AppState();
-        appState.changeConfiguration("test_journal/");
-        appState.loadConfiguration();
-        if (appState.configurationExists()) {
-            appState.loadTree();
-            TreeItem<FileTree> root = new TreeItem<>(appState.fileTree);
-            note_tree.setRoot(root);
-            try {
-                fillTreeView(root);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
         setupNoteTree();
     }
 
@@ -98,7 +92,20 @@ public class Controller {
                 });
             }
         });
+
+        // By default, editor is disabled
         editor.setDisable(true);
+
+        // Save button saves contents to file corresponding to currently edited note
+        editor.save_button.setOnAction(arg0 -> {
+            FileTree file_tree = note_tree.getSelectionModel().getSelectedItem().getValue();
+            Path file_path = appState.resolveJournalPath(file_tree.path);
+            try {
+                Files.writeString(file_path, editor.getHtmlText(), CREATE);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     void setupNoteTree() {
@@ -117,5 +124,41 @@ public class Controller {
                 editor.setDisable(true);
             }
         });
+    }
+
+    void setupAppState() {
+        // Attempt to load existing config
+        appState = new AppState();
+        appState.loadConfiguration();
+
+        // Force user to select a folder where journal will be stored (if not selected already)
+        while (!appState.configurationExists()) {
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            directoryChooser.setTitle("Journal location");
+
+            // We have to use new window
+            StackPane root = new StackPane();
+            Stage stage = new Stage();
+            stage.setTitle("New Stage Title");
+            stage.setScene(new Scene(root, 150, 150));
+
+            File selectedDirectory = directoryChooser.showDialog(stage.getScene().getWindow());
+            if (selectedDirectory != null) {
+                Path dir = selectedDirectory.toPath();
+                appState.changeConfiguration(dir.toString());
+            }
+
+            stage.close();
+        }
+
+        appState.loadTree();
+        TreeItem<FileTree> root = new TreeItem<>(appState.fileTree);
+        note_tree.setRoot(root);
+
+        try {
+            fillTreeView(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

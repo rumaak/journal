@@ -1,6 +1,7 @@
 package ruman.semestral_work;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -21,11 +22,15 @@ public class AppState {
     }
 
     public void loadConfiguration() {
-        try (FileInputStream file = new FileInputStream(".config")) {
-            ObjectInputStream config = new ObjectInputStream(file);
-            configuration = (HashMap<String, String>) config.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+        String configName = ".config";
+        Path configPath = Paths.get(configName);
+        if (Files.exists(configPath)) {
+            try (FileInputStream file = new FileInputStream(configName)) {
+                ObjectInputStream config = new ObjectInputStream(file);
+                configuration = (HashMap<String, String>) config.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 
