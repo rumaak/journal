@@ -29,19 +29,10 @@ public class Controller {
             e.printStackTrace();
         }
 
-        // New buttons should enable / disable together with original ones
-        editor.focusedProperty().addListener((observableValue, aBoolean, t1) -> {
-            Node node = editor.lookup(".html-editor-foreground");
-            if (node instanceof ColorPicker) {
-                node.disabledProperty().addListener((observableValue1, aBoolean1, t11) -> {
-                    editor.save_button.setDisable(observableValue1.getValue());
-                    editor.image_button.setDisable(observableValue1.getValue());
-                });
-            }
-        });
-        editor.setDisable(true);
+        setupEditor();
 
         appState = new AppState();
+        appState.changeConfiguration("test_journal/");
         appState.loadConfiguration();
         if (appState.configurationExists()) {
             appState.loadTree();
@@ -52,27 +43,9 @@ public class Controller {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else {
-            // TODO don't load anything
         }
-        appState.changeConfiguration("test_journal/");
 
-        // TODO this actually belongs to the if-else statement above
-        note_tree.getSelectionModel().selectedItemProperty().addListener((observableValue, fileTreeTreeItem, t1) -> {
-            if ((t1 != null) && (t1.getValue().type != ElementType.DIRECTORY)) {
-                editor.setDisable(false);
-                Path path = appState.resolveJournalPath(t1.getValue().path);
-
-                try {
-                    editor.setHtmlText(Files.readString(path));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            } else {
-                editor.setDisable(true);
-            }
-        });
+        setupNoteTree();
     }
 
     void fillTreeView(TreeItem<FileTree> root) throws IOException {
@@ -111,6 +84,38 @@ public class Controller {
         });
         rename_button1.setOnAction(arg0 -> {
             System.out.println("Renamed group / note!");
+        });
+    }
+
+    void setupEditor() {
+        // New buttons should enable / disable together with original ones
+        editor.focusedProperty().addListener((observableValue, aBoolean, t1) -> {
+            Node node = editor.lookup(".html-editor-foreground");
+            if (node instanceof ColorPicker) {
+                node.disabledProperty().addListener((observableValue1, aBoolean1, t11) -> {
+                    editor.save_button.setDisable(observableValue1.getValue());
+                    editor.image_button.setDisable(observableValue1.getValue());
+                });
+            }
+        });
+        editor.setDisable(true);
+    }
+
+    void setupNoteTree() {
+        note_tree.getSelectionModel().selectedItemProperty().addListener((observableValue, fileTreeTreeItem, t1) -> {
+            if ((t1 != null) && (t1.getValue().type != ElementType.DIRECTORY)) {
+                editor.setDisable(false);
+                Path path = appState.resolveJournalPath(t1.getValue().path);
+
+                try {
+                    editor.setHtmlText(Files.readString(path));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                editor.setDisable(true);
+            }
         });
     }
 }
