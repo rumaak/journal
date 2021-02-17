@@ -23,16 +23,10 @@ import java.nio.file.Paths;
 import static java.nio.file.StandardOpenOption.CREATE;
 
 public class CustomHTMLEditor extends HTMLEditor {
-    Button save_button, image_button, add_group_button, add_note_button, remove_button, rename_button;
+    Button save_button, image_button;
 
     public CustomHTMLEditor() {
         try {
-            // These buttons might get moved elsewhere
-            add_group_button = addButton("add_group_btn.png", arg0 -> System.out.println("Added a group"));
-            add_note_button = addButton("add_note_btn.png", arg0 -> System.out.println("Added a note"));
-            remove_button = addButton("remove_btn.png", arg0 -> System.out.println("Removed note / group"));
-            rename_button = addButton("rename_btn.png", arg0 -> System.out.println("Renamed note / group"));
-
             save_button = addButton("save_btn.png", arg0 -> {
                 DirectoryChooser directoryChooser = new DirectoryChooser();
                 directoryChooser.setTitle("Save location");
