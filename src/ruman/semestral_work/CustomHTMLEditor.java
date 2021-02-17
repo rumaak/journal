@@ -27,24 +27,8 @@ public class CustomHTMLEditor extends HTMLEditor {
 
     public CustomHTMLEditor() {
         try {
-            save_button = addButton("save_btn.png", arg0 -> {
-                DirectoryChooser directoryChooser = new DirectoryChooser();
-                directoryChooser.setTitle("Save location");
-                File selectedDirectory = directoryChooser.showDialog(getScene().getWindow());
-                if (selectedDirectory != null) {
-                    Path dir = selectedDirectory.toPath();
-                    Path file_path = dir.resolve("save.html");
-                    String html = getHtmlText();
-                    try {
-                        Files.writeString(file_path, html, CREATE);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
+            save_button = addButton("save_btn.png", arg0 -> {}); // Save button handler is supplied in Controller class
             addSeparator();
-
             image_button = addButton("image_btn.png", arg0 -> {
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Select a file to import");
