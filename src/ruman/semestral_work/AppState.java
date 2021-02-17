@@ -10,7 +10,7 @@ import static java.nio.file.Files.walkFileTree;
 public class AppState {
 
     HashMap<String, String> configuration;
-    FileTree fileTree;
+    public FileTree fileTree;
 
     public AppState() {
         this.configuration = null;
@@ -41,7 +41,7 @@ public class AppState {
     }
 
     public void loadTree() {
-        fileTree = new FileTree("Journal", ElementType.DIRECTORY);
+        fileTree = new FileTree("Journal", Paths.get(""), ElementType.DIRECTORY);
         Path root = Paths.get(configuration.get("folder"));
         CustomVisitor customVisitor = new CustomVisitor(fileTree, root);
 
@@ -51,6 +51,11 @@ public class AppState {
             e.printStackTrace();
         }
 
-        System.out.println(fileTree);
+        // System.out.println(fileTree.toStringDebug());
+    }
+
+    public Path resolveJournalPath(Path path) {
+        Path p = Paths.get(configuration.get("folder"));
+        return p.resolve(path);
     }
 }

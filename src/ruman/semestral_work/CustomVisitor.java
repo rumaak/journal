@@ -21,7 +21,7 @@ public class CustomVisitor extends SimpleFileVisitor<Path> {
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attr) {
         Path path = folderPath.relativize(file);
-        fileTree.addRecursively(path, ElementType.FILE);
+        fileTree.addRecursively(path, Paths.get(""), ElementType.FILE);
         return CONTINUE;
     }
 
@@ -29,7 +29,7 @@ public class CustomVisitor extends SimpleFileVisitor<Path> {
     @Override
     public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
         Path path = folderPath.relativize(dir);
-        fileTree.addRecursively(path, ElementType.DIRECTORY);
+        fileTree.addRecursively(path, Paths.get(""), ElementType.DIRECTORY);
         return CONTINUE;
     }
 }
