@@ -9,7 +9,6 @@ import java.util.List;
 import static java.nio.file.FileVisitResult.CONTINUE;
 
 public class FileTree {
-    // TODO consider static AppState
     static int created = 0;
 
     List<FileTree> descendants = new ArrayList<>();

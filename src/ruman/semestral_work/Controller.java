@@ -7,6 +7,8 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.StackPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -67,6 +69,16 @@ public class Controller {
         add_note_button1.setGraphic(getGraphic("add_note_btn.png"));
         remove_button1.setGraphic(getGraphic("remove_btn.png"));
         rename_button1.setGraphic(getGraphic("rename_btn.png"));
+
+        Tooltip add_group_tooltip = new Tooltip("Add group");
+        Tooltip add_note_tooltip = new Tooltip("Add note");
+        Tooltip remove_tooltip = new Tooltip("Remove group / note");
+        Tooltip rename_tooltip = new Tooltip("Rename group / note");
+
+        add_group_button1.setTooltip(add_group_tooltip);
+        add_note_button1.setTooltip(add_note_tooltip);
+        remove_button1.setTooltip(remove_tooltip);
+        rename_button1.setTooltip(rename_tooltip);
 
         add_group_button1.setOnAction(arg0 -> addItem(ElementType.DIRECTORY));
         add_note_button1.setOnAction(arg0 -> addItem(ElementType.FILE));
@@ -178,7 +190,6 @@ public class Controller {
             stage.close();
         }
 
-        // TODO would be maybe more suitable to put in note_tree setup
         appState.loadTree();
         TreeItem<FileTree> root = new TreeItem<>(appState.fileTree);
         note_tree.setRoot(root);
@@ -263,6 +274,15 @@ public class Controller {
         }
 
         return new_name_full.toString();
+    }
+
+    public void setupKeyboardShortcuts() {
+        // Setup ctrl+S combination to fire save button
+        editor.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN), () -> {
+            if (!editor.save_button.isDisabled()) {
+                editor.save_button.fire();
+            }
+        });
     }
 
     private final class FileTreeCellImpl extends TreeCell<FileTree> {
