@@ -14,6 +14,10 @@ public class Main extends Application {
         Parent root = loader.load();
         primaryStage.setTitle("Journal");
         primaryStage.setScene(new Scene(root));
+
+        Controller c = loader.getController();
+        c.setupKeyboardShortcuts();
+
         primaryStage.show();
     }
 

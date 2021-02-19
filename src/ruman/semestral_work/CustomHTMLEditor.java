@@ -7,11 +7,11 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Separator;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.web.HTMLEditor;
 import javafx.scene.web.WebView;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -20,26 +20,28 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static java.nio.file.StandardOpenOption.CREATE;
-
 public class CustomHTMLEditor extends HTMLEditor {
     Button save_button, image_button;
 
     public CustomHTMLEditor() {
         try {
+            Tooltip save_tooltip = new Tooltip("Save");
             save_button = addButton("save_btn.png", arg0 -> {}); // Save button handler is supplied in Controller class
+            save_button.setTooltip(save_tooltip);
+
             addSeparator();
+
+            Tooltip image_tooltip = new Tooltip("Add image");
             image_button = addButton("image_btn.png", arg0 -> {
                 FileChooser fileChooser = new FileChooser();
                 fileChooser.setTitle("Select a file to import");
                 fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("All Files", "*.*"));
                 File selectedFile = fileChooser.showOpenDialog(getScene().getWindow());
                 if (selectedFile != null) {
-                    System.out.println(selectedFile);
+                    insertHtmlAfterCursor("<img src=\"" + "file:" + selectedFile + "\" alt=\"Invalid\">");
                 }
-
-                insertHtmlAfterCursor("<img src=\"" + "file:" + selectedFile + "\" alt=\"retard\" style=\"max-width: 704; max-height: 324\">");
             });
+            image_button.setTooltip(image_tooltip);
 
         } catch (IOException e) {
             e.printStackTrace();
