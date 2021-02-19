@@ -1,11 +1,17 @@
 package ruman.semestral_work;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.IOException;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.nio.file.FileVisitResult.CONTINUE;
+
 public class FileTree {
+    // TODO consider static AppState
+    static int created = 0;
+
     List<FileTree> descendants = new ArrayList<>();
     String name;
     ElementType type;
@@ -15,6 +21,7 @@ public class FileTree {
         this.name = name;
         this.type = type;
         this.path = path;
+        created += 1;
     }
 
     public void addRecursively(Path path, Path cutOff, ElementType type) {
@@ -47,8 +54,41 @@ public class FileTree {
         }
     }
 
+    public void save(AppState appState) throws IOException {
+        Path target = appState.resolveJournalPath(path);
+        if (type == ElementType.DIRECTORY) {
+            Files.createDirectory(target);
+        } else {
+            Files.createFile(target);
+        }
+    }
+
+    public void delete(AppState appState) throws IOException {
+        Path target = appState.resolveJournalPath(path);
+        Files.walkFileTree(target, new SimpleFileVisitor<>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                Files.delete(file);
+                return CONTINUE;
+            }
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                if (exc == null) {
+                    Files.delete(dir);
+                    return CONTINUE;
+                } else {
+                    throw exc;
+                }
+            }
+        });
+    }
+
     @Override
     public String toString() {
+        if (type == ElementType.FILE) {
+            // Remove .html
+            return name.substring(0, name.length()-5);
+        }
         return name;
     }
 
@@ -67,5 +107,26 @@ public class FileTree {
         }
         result.append("]}");
         return result.toString();
+    }
+
+    public void rename(String new_name, AppState appState) throws IOException {
+        Path source = appState.resolveJournalPath(path);
+        Path target = source.resolveSibling(new_name);
+
+        Files.move(source, target);
+
+        name = new_name;
+        path = appState.relativizeJournalPath(target);
+
+        for (FileTree d : descendants) {
+            d.propagateNameChange(path);
+        }
+    }
+
+    public void propagateNameChange(Path new_parent_path) {
+        path = new_parent_path.resolve(name);
+        for (FileTree d : descendants) {
+            d.propagateNameChange(path);
+        }
     }
 }

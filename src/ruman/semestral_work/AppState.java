@@ -34,9 +34,10 @@ public class AppState {
         }
     }
 
-    public void changeConfiguration(String new_folder) {
+    public void changeConfiguration(String new_folder, String journal_name) {
         configuration = new HashMap<>();
         configuration.put("folder", new_folder);
+        configuration.put("journal_name", journal_name);
         try (FileOutputStream file = new FileOutputStream(".config")) {
             ObjectOutputStream config = new ObjectOutputStream(file);
             config.writeObject(configuration);
@@ -46,7 +47,8 @@ public class AppState {
     }
 
     public void loadTree() {
-        fileTree = new FileTree("Journal", Paths.get(""), ElementType.DIRECTORY);
+        String journal_name = configuration.get("journal_name");
+        fileTree = new FileTree(journal_name, Paths.get(""), ElementType.DIRECTORY);
         Path root = Paths.get(configuration.get("folder"));
         CustomVisitor customVisitor = new CustomVisitor(fileTree, root);
 
@@ -62,5 +64,18 @@ public class AppState {
     public Path resolveJournalPath(Path path) {
         Path p = Paths.get(configuration.get("folder"));
         return p.resolve(path);
+    }
+
+    public Path relativizeJournalPath(Path path) {
+        Path p = Paths.get(configuration.get("folder"));
+        return p.relativize(path);
+    }
+
+    public String getJournalDirectory() {
+        return configuration.get("folder");
+    }
+
+    public String getJournalName() {
+        return configuration.get("journal_name");
     }
 }
