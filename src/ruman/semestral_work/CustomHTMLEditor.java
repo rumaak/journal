@@ -44,7 +44,7 @@ public class CustomHTMLEditor extends HTMLEditor {
             image_button.setTooltip(image_tooltip);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            Helpers.alertErrorExit("Couldn't load editor button image!");
         }
     }
 
