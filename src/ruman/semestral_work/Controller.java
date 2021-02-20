@@ -185,6 +185,8 @@ public class Controller {
             if (selected_directory != null) {
                 Path dir = selected_directory.toPath();
                 app_state.changeConfiguration(dir.toString(), "Journal");
+            } else {
+                Helpers.alertErrorExit("No journal directory was selected!");
             }
 
             stage.close();
