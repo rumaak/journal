@@ -9,16 +9,21 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("journal.fxml"));
-        Parent root = loader.load();
-        primaryStage.setTitle("Journal");
-        primaryStage.setScene(new Scene(root));
+    public void start(Stage primaryStage) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("journal.fxml"));
+            Parent root = loader.load();
+            primaryStage.setTitle("Journal");
+            primaryStage.setScene(new Scene(root));
 
-        Controller c = loader.getController();
-        c.setupKeyboardShortcuts();
+            Controller c = loader.getController();
+            c.setupKeyboardShortcuts();
 
-        primaryStage.show();
+            primaryStage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
 

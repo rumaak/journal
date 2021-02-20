@@ -38,7 +38,7 @@ public class Controller {
         try {
             setupTreeViewButtons();
         } catch (IOException e) {
-            e.printStackTrace();
+            Helpers.alertErrorExit("Couldn't load a TreeView button image!");
         }
 
         setupEditor();
@@ -134,7 +134,7 @@ public class Controller {
                 Files.deleteIfExists(file_path);
                 Files.writeString(file_path, editor.getHtmlText(), CREATE);
             } catch (IOException e) {
-                e.printStackTrace();
+                Helpers.alertWarning("Couldn't save file!");
             }
         });
     }
@@ -148,7 +148,7 @@ public class Controller {
                 try {
                     editor.setHtmlText(Files.readString(path));
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Helpers.alertErrorExit("Couldn't read a selected file!");
                 }
 
             } else {
@@ -171,7 +171,7 @@ public class Controller {
         appState.loadConfiguration();
 
         // Force user to select a folder where journal will be stored (if not selected already)
-        while (!appState.configurationExists()) {
+        if (!appState.configurationExists()) {
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Journal location");
 
@@ -197,7 +197,7 @@ public class Controller {
         try {
             fillTreeView(root);
         } catch (IOException e) {
-            e.printStackTrace();
+            Helpers.alertErrorExit("Couldn't load a note image!");
         }
     }
 
@@ -340,12 +340,7 @@ public class Controller {
                     if (successful) {
                         commitEdit(file_tree);
                     } else {
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("Error");
-                        alert.setHeaderText(null);
-                        alert.setContentText("There cannot be two elements with identical name in the same group!");
-                        alert.showAndWait();
-
+                        Helpers.alertWarning("There cannot be two elements with identical name in the same group!");
                         cancelEdit();
                     }
 
@@ -378,7 +373,7 @@ public class Controller {
                 try {
                     file_tree.rename(new_name, appState);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Helpers.alertErrorExit("An error occurred during changing element name!");
                 }
             }
             return true;

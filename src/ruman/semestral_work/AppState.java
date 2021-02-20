@@ -29,7 +29,7 @@ public class AppState {
                 ObjectInputStream config = new ObjectInputStream(file);
                 configuration = (HashMap<String, String>) config.readObject();
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+                Helpers.alertWarning("Couldn't load existing configuration file!");
             }
         }
     }
@@ -42,7 +42,8 @@ public class AppState {
             ObjectOutputStream config = new ObjectOutputStream(file);
             config.writeObject(configuration);
         } catch (IOException e) {
-            e.printStackTrace();
+            // if attempt to write fails, we cannot continue
+            Helpers.alertErrorExit("Couldn't save configuration to configuration file!");
         }
     }
 
@@ -55,7 +56,7 @@ public class AppState {
         try {
             walkFileTree(root, customVisitor);
         } catch (IOException e) {
-            e.printStackTrace();
+            Helpers.alertErrorExit("An error occurred during loading journal tree!");
         }
 
         // System.out.println(fileTree.toStringDebug());
