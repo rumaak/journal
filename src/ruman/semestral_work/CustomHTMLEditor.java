@@ -20,6 +20,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * Custom extension of {@link HTMLEditor} that enables adding images and saving of content.
+ */
 public class CustomHTMLEditor extends HTMLEditor {
     Button save_button, image_button;
 
@@ -30,6 +33,9 @@ public class CustomHTMLEditor extends HTMLEditor {
     private static final String WEB_VIEW_IDENTIFIER = ".web-view";
     private static final String TOP_TOOLBAR_IDENTIFIER = ".top-toolbar";
 
+    /**
+     * Create save button (without action handler) and image button, separate them with separator.
+     */
     public CustomHTMLEditor() {
         try {
             Tooltip save_tooltip = new Tooltip("Save");
@@ -55,6 +61,11 @@ public class CustomHTMLEditor extends HTMLEditor {
         }
     }
 
+    /**
+     * Inserts html String at the current position of caret in editor window.
+     *
+     * @param   html    html String to be inserted
+     */
     void insertHtmlAfterCursor(String html) {
         // replace invalid chars
         html = html.replace("\\", "\\\\")
@@ -99,6 +110,13 @@ public class CustomHTMLEditor extends HTMLEditor {
         web_view.getEngine().executeScript(script);
     }
 
+    /**
+     * Create new button and put it into top toolbar of editor.
+     *
+     * @param   graphic_file    file name of image to be used on button
+     * @param   handler         action handler of this button
+     * @return  new button
+     */
     Button addButton(String graphic_file, EventHandler<ActionEvent> handler) throws IOException {
         Path path = Paths.get(".").resolve(RESOURCE_DIR).resolve(graphic_file);
         ImageView graphic = new ImageView(new Image(Files.newInputStream(path)));
@@ -114,6 +132,9 @@ public class CustomHTMLEditor extends HTMLEditor {
         return button;
     }
 
+    /**
+     * Create a visual separator and add it to top toolbar of editor.
+     */
     void addSeparator() {
         Separator separator = new Separator();
         separator.setOrientation(Orientation.VERTICAL);

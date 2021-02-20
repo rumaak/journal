@@ -6,8 +6,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * Application entry point class.
+ */
 public class Main extends Application {
 
+    /**
+     * Loads graphical interface of application.
+     */
     @Override
     public void start(Stage primary_stage) {
         try {
@@ -27,6 +33,9 @@ public class Main extends Application {
     }
 
 
+    /**
+     * Application entry point function.
+     */
     public static void main(String[] args) {
         launch(args);
     }
