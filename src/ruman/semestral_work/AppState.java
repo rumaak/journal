@@ -22,10 +22,10 @@ public class AppState {
     }
 
     public void loadConfiguration() {
-        String configName = ".config";
-        Path configPath = Paths.get(configName);
-        if (Files.exists(configPath)) {
-            try (FileInputStream file = new FileInputStream(configName)) {
+        String config_name = ".config";
+        Path config_path = Paths.get(config_name);
+        if (Files.exists(config_path)) {
+            try (FileInputStream file = new FileInputStream(config_name)) {
                 ObjectInputStream config = new ObjectInputStream(file);
                 configuration = (HashMap<String, String>) config.readObject();
             } catch (IOException | ClassNotFoundException e) {
@@ -51,10 +51,10 @@ public class AppState {
         String journal_name = configuration.get("journal_name");
         fileTree = new FileTree(journal_name, Paths.get(""), ElementType.DIRECTORY);
         Path root = Paths.get(configuration.get("folder"));
-        CustomVisitor customVisitor = new CustomVisitor(fileTree, root);
+        CustomVisitor custom_visitor = new CustomVisitor(fileTree, root);
 
         try {
-            walkFileTree(root, customVisitor);
+            walkFileTree(root, custom_visitor);
         } catch (IOException e) {
             Helpers.alertErrorExit("An error occurred during loading journal tree!");
         }

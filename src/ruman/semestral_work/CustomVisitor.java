@@ -10,26 +10,26 @@ import java.nio.file.attribute.BasicFileAttributes;
 import static java.nio.file.FileVisitResult.CONTINUE;
 
 public class CustomVisitor extends SimpleFileVisitor<Path> {
-    FileTree fileTree;
-    Path folderPath;
+    FileTree file_tree;
+    Path folder_path;
 
-    public CustomVisitor(FileTree fileTree, Path folderPath) {
-        this.fileTree = fileTree;
-        this.folderPath = folderPath;
+    public CustomVisitor(FileTree file_tree, Path folder_path) {
+        this.file_tree = file_tree;
+        this.folder_path = folder_path;
     }
 
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attr) {
-        Path path = folderPath.relativize(file);
-        fileTree.addRecursively(path, Paths.get(""), ElementType.FILE);
+        Path path = folder_path.relativize(file);
+        file_tree.addRecursively(path, Paths.get(""), ElementType.FILE);
         return CONTINUE;
     }
 
     // Print each directory visited.
     @Override
     public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
-        Path path = folderPath.relativize(dir);
-        fileTree.addRecursively(path, Paths.get(""), ElementType.DIRECTORY);
+        Path path = folder_path.relativize(dir);
+        file_tree.addRecursively(path, Paths.get(""), ElementType.DIRECTORY);
         return CONTINUE;
     }
 }
