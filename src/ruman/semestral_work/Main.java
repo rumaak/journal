@@ -9,17 +9,17 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) {
+    public void start(Stage primary_stage) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("journal.fxml"));
             Parent root = loader.load();
-            primaryStage.setTitle("Journal");
-            primaryStage.setScene(new Scene(root));
+            primary_stage.setTitle("Journal");
+            primary_stage.setScene(new Scene(root));
 
-            Controller c = loader.getController();
-            c.setupKeyboardShortcuts();
+            Controller controller = loader.getController();
+            controller.setupKeyboardShortcuts();
 
-            primaryStage.show();
+            primary_stage.show();
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(1);

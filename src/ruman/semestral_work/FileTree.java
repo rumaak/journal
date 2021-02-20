@@ -23,19 +23,19 @@ public class FileTree {
         created += 1;
     }
 
-    public void addRecursively(Path path, Path cutOff, ElementType type) {
+    public void addRecursively(Path path, Path cut_off, ElementType type) {
         // Check whether not at the end of recursion
         if (path.compareTo(Paths.get("")) != 0) {
 
             Path root = path.getName(0);
-            Path newCutOff = cutOff.resolve(root);
+            Path new_cut_off = cut_off.resolve(root);
             String name = root.getFileName().toString();
-            Path newPath = root.relativize(path);
+            Path new_path = root.relativize(path);
             boolean found = false;
 
             for (FileTree tree : descendants) {
                 if (tree.name.equals(name)) {
-                    tree.addRecursively(newPath, newCutOff, type);
+                    tree.addRecursively(new_path, new_cut_off, type);
                     found = true;
                     break;
                 }
@@ -43,18 +43,18 @@ public class FileTree {
 
             if (!found) {
                 ElementType current_type = type;
-                if (newPath.compareTo(Paths.get("")) != 0) {
+                if (new_path.compareTo(Paths.get("")) != 0) {
                     current_type = ElementType.DIRECTORY;
                 }
-                FileTree newTree = new FileTree(name, newCutOff, current_type);
-                descendants.add(newTree);
-                newTree.addRecursively(newPath, newCutOff, type);
+                FileTree new_tree = new FileTree(name, new_cut_off, current_type);
+                descendants.add(new_tree);
+                new_tree.addRecursively(new_path, new_cut_off, type);
             }
         }
     }
 
-    public void save(AppState appState) throws IOException {
-        Path target = appState.resolveJournalPath(path);
+    public void save(AppState app_state) throws IOException {
+        Path target = app_state.resolveJournalPath(path);
         if (type == ElementType.DIRECTORY) {
             Files.createDirectory(target);
         } else {
@@ -62,8 +62,8 @@ public class FileTree {
         }
     }
 
-    public void delete(AppState appState) throws IOException {
-        Path target = appState.resolveJournalPath(path);
+    public void delete(AppState app_state) throws IOException {
+        Path target = app_state.resolveJournalPath(path);
         Files.walkFileTree(target, new SimpleFileVisitor<>() {
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
@@ -108,14 +108,14 @@ public class FileTree {
         return result.toString();
     }
 
-    public void rename(String new_name, AppState appState) throws IOException {
-        Path source = appState.resolveJournalPath(path);
+    public void rename(String new_name, AppState app_state) throws IOException {
+        Path source = app_state.resolveJournalPath(path);
         Path target = source.resolveSibling(new_name);
 
         Files.move(source, target);
 
         name = new_name;
-        path = appState.relativizeJournalPath(target);
+        path = app_state.relativizeJournalPath(target);
 
         for (FileTree d : descendants) {
             d.propagateNameChange(path);

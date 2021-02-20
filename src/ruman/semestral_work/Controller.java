@@ -29,7 +29,7 @@ public class Controller {
     @FXML CustomHTMLEditor editor;
     @FXML TreeView<FileTree> note_tree;
 
-    AppState appState;
+    AppState app_state;
 
     @FXML
     void initialize() {
@@ -93,7 +93,7 @@ public class Controller {
 
             // Remove files
             try {
-                tree.delete(appState);
+                tree.delete(app_state);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -113,12 +113,12 @@ public class Controller {
 
     void setupEditor() {
         // New buttons should enable / disable together with original ones
-        editor.focusedProperty().addListener((observableValue, aBoolean, t1) -> {
+        editor.focusedProperty().addListener((observable_value, a_boolean, t1) -> {
             Node node = editor.lookup(".html-editor-foreground");
             if (node instanceof ColorPicker) {
-                node.disabledProperty().addListener((observableValue1, aBoolean1, t11) -> {
-                    editor.save_button.setDisable(observableValue1.getValue());
-                    editor.image_button.setDisable(observableValue1.getValue());
+                node.disabledProperty().addListener((observable_value1, a_boolean1, t11) -> {
+                    editor.save_button.setDisable(observable_value1.getValue());
+                    editor.image_button.setDisable(observable_value1.getValue());
                 });
             }
         });
@@ -129,7 +129,7 @@ public class Controller {
         // Save button saves contents to file corresponding to currently edited note
         editor.save_button.setOnAction(arg0 -> {
             FileTree file_tree = note_tree.getSelectionModel().getSelectedItem().getValue();
-            Path file_path = appState.resolveJournalPath(file_tree.path);
+            Path file_path = app_state.resolveJournalPath(file_tree.path);
             try {
                 Files.deleteIfExists(file_path);
                 Files.writeString(file_path, editor.getHtmlText(), CREATE);
@@ -140,10 +140,10 @@ public class Controller {
     }
 
     void setupNoteTree() {
-        note_tree.getSelectionModel().selectedItemProperty().addListener((observableValue, fileTreeTreeItem, t1) -> {
+        note_tree.getSelectionModel().selectedItemProperty().addListener((observable_value, file_tree_tree_item, t1) -> {
             if ((t1 != null) && (t1.getValue().type != ElementType.DIRECTORY)) {
                 editor.setDisable(false);
-                Path path = appState.resolveJournalPath(t1.getValue().path);
+                Path path = app_state.resolveJournalPath(t1.getValue().path);
 
                 try {
                     editor.setHtmlText(Files.readString(path));
@@ -162,18 +162,18 @@ public class Controller {
         TreeItem<FileTree> root = note_tree.getRoot();
         note_tree.getSelectionModel().select(root);
 
-        note_tree.setCellFactory(fileTreeTreeView -> new FileTreeCellImpl());
+        note_tree.setCellFactory(file_tree_tree_view -> new FileTreeCellImpl());
     }
 
     void setupAppState() {
         // Attempt to load existing config
-        appState = new AppState();
-        appState.loadConfiguration();
+        app_state = new AppState();
+        app_state.loadConfiguration();
 
         // Force user to select a folder where journal will be stored (if not selected already)
-        if (!appState.configurationExists()) {
-            DirectoryChooser directoryChooser = new DirectoryChooser();
-            directoryChooser.setTitle("Journal location");
+        if (!app_state.configurationExists()) {
+            DirectoryChooser directory_chooser = new DirectoryChooser();
+            directory_chooser.setTitle("Journal location");
 
             // We have to use new window
             StackPane root = new StackPane();
@@ -181,17 +181,17 @@ public class Controller {
             stage.setTitle("New Stage Title");
             stage.setScene(new Scene(root, 150, 150));
 
-            File selectedDirectory = directoryChooser.showDialog(stage.getScene().getWindow());
-            if (selectedDirectory != null) {
-                Path dir = selectedDirectory.toPath();
-                appState.changeConfiguration(dir.toString(), "Journal");
+            File selected_directory = directory_chooser.showDialog(stage.getScene().getWindow());
+            if (selected_directory != null) {
+                Path dir = selected_directory.toPath();
+                app_state.changeConfiguration(dir.toString(), "Journal");
             }
 
             stage.close();
         }
 
-        appState.loadTree();
-        TreeItem<FileTree> root = new TreeItem<>(appState.fileTree);
+        app_state.loadTree();
+        TreeItem<FileTree> root = new TreeItem<>(app_state.fileTree);
         note_tree.setRoot(root);
 
         try {
@@ -238,7 +238,7 @@ public class Controller {
 
         // Do corresponding changes on filesystem level
         try {
-            new_file_tree.save(appState);
+            new_file_tree.save(app_state);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -287,18 +287,18 @@ public class Controller {
 
     private final class FileTreeCellImpl extends TreeCell<FileTree> {
         // This field is used only when editing
-        private TextField textField;
+        private TextField text_field;
 
         @Override
         public void startEdit() {
             super.startEdit();
 
-            if (textField == null) {
+            if (text_field == null) {
                 createTextField();
             }
             setText(null);
-            setGraphic(textField);
-            textField.selectAll();
+            setGraphic(text_field);
+            text_field.selectAll();
         }
 
         @Override
@@ -317,11 +317,11 @@ public class Controller {
                 setGraphic(null);
             } else {
                 if (isEditing()) {
-                    if (textField != null) {
-                        textField.setText(getString());
+                    if (text_field != null) {
+                        text_field.setText(getString());
                     }
                     setText(null);
-                    setGraphic(textField);
+                    setGraphic(text_field);
                 } else {
                     setText(getString());
                     setGraphic(getTreeItem().getGraphic());
@@ -330,8 +330,8 @@ public class Controller {
         }
 
         private void createTextField() {
-            textField = new TextField(getString());
-            textField.setOnKeyReleased(t -> {
+            text_field = new TextField(getString());
+            text_field.setOnKeyReleased(t -> {
                 if (t.getCode() == KeyCode.ENTER) {
                     TreeItem<FileTree> tree_item = getTreeItem();
                     FileTree file_tree = getItem();
@@ -355,14 +355,14 @@ public class Controller {
         }
 
         private boolean changeItemName(TreeItem<FileTree> tree_item, FileTree file_tree) {
-            String new_name = textField.getText();
+            String new_name = text_field.getText();
             if (file_tree.type == ElementType.FILE) {
                 new_name += ".html";
             }
 
             // Root element translates to root directory, which we do not wish to rename
             if (tree_item == getTreeView().getRoot()) {
-                appState.changeConfiguration(appState.getJournalDirectory(), new_name);
+                app_state.changeConfiguration(app_state.getJournalDirectory(), new_name);
                 file_tree.name = new_name;
             } else {
 
@@ -371,7 +371,7 @@ public class Controller {
                 }
 
                 try {
-                    file_tree.rename(new_name, appState);
+                    file_tree.rename(new_name, app_state);
                 } catch (IOException e) {
                     Helpers.alertErrorExit("An error occurred during changing element name!");
                 }

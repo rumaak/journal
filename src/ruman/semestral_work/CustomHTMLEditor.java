@@ -33,12 +33,12 @@ public class CustomHTMLEditor extends HTMLEditor {
 
             Tooltip image_tooltip = new Tooltip("Add image");
             image_button = addButton("image_btn.png", arg0 -> {
-                FileChooser fileChooser = new FileChooser();
-                fileChooser.setTitle("Select a file to import");
-                fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("All Files", "*.*"));
-                File selectedFile = fileChooser.showOpenDialog(getScene().getWindow());
-                if (selectedFile != null) {
-                    insertHtmlAfterCursor("<img src=\"" + "file:" + selectedFile + "\" alt=\"Invalid\">");
+                FileChooser file_chooser = new FileChooser();
+                file_chooser.setTitle("Select a file to import");
+                file_chooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("All Files", "*.*"));
+                File selected_file = file_chooser.showOpenDialog(getScene().getWindow());
+                if (selected_file != null) {
+                    insertHtmlAfterCursor("<img src=\"" + "file:" + selected_file + "\" alt=\"Invalid\">");
                 }
             });
             image_button.setTooltip(image_tooltip);
@@ -88,8 +88,8 @@ public class CustomHTMLEditor extends HTMLEditor {
                 + "})(\"%s\");", html);
 
         // execute script
-        WebView mWebView = (WebView) lookup(".web-view");
-        mWebView.getEngine().executeScript(script);
+        WebView web_view = (WebView) lookup(".web-view");
+        web_view.getEngine().executeScript(script);
     }
 
     Button addButton(String graphic_file, EventHandler<ActionEvent> handler) throws IOException {
