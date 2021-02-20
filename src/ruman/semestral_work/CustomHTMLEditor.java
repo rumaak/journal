@@ -23,16 +23,23 @@ import java.nio.file.Paths;
 public class CustomHTMLEditor extends HTMLEditor {
     Button save_button, image_button;
 
+    private static final String SAVE_BUTTON_FILE = "save_btn.png";
+    private static final String IMAGE_BUTTON_FILE = "image_btn.png";
+    private static final String RESOURCE_DIR = "resources";
+
+    private static final String WEB_VIEW_IDENTIFIER = ".web-view";
+    private static final String TOP_TOOLBAR_IDENTIFIER = ".top-toolbar";
+
     public CustomHTMLEditor() {
         try {
             Tooltip save_tooltip = new Tooltip("Save");
-            save_button = addButton("save_btn.png", arg0 -> {}); // Save button handler is supplied in Controller class
+            save_button = addButton(SAVE_BUTTON_FILE, arg0 -> {}); // Save button handler is supplied in Controller class
             save_button.setTooltip(save_tooltip);
 
             addSeparator();
 
             Tooltip image_tooltip = new Tooltip("Add image");
-            image_button = addButton("image_btn.png", arg0 -> {
+            image_button = addButton(IMAGE_BUTTON_FILE, arg0 -> {
                 FileChooser file_chooser = new FileChooser();
                 file_chooser.setTitle("Select a file to import");
                 file_chooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("All Files", "*.*"));
@@ -88,17 +95,17 @@ public class CustomHTMLEditor extends HTMLEditor {
                 + "})(\"%s\");", html);
 
         // execute script
-        WebView web_view = (WebView) lookup(".web-view");
+        WebView web_view = (WebView) lookup(WEB_VIEW_IDENTIFIER);
         web_view.getEngine().executeScript(script);
     }
 
     Button addButton(String graphic_file, EventHandler<ActionEvent> handler) throws IOException {
-        Path path = Paths.get(".").resolve("resources").resolve(graphic_file);
+        Path path = Paths.get(".").resolve(RESOURCE_DIR).resolve(graphic_file);
         ImageView graphic = new ImageView(new Image(Files.newInputStream(path)));
         Button button = new Button("", graphic);
         button.setOnAction(handler);
 
-        Node node = lookup(".top-toolbar");
+        Node node = lookup(TOP_TOOLBAR_IDENTIFIER);
         if (node instanceof ToolBar) {
             ToolBar bar = (ToolBar) node;
             bar.getItems().add(button);
@@ -111,7 +118,7 @@ public class CustomHTMLEditor extends HTMLEditor {
         Separator separator = new Separator();
         separator.setOrientation(Orientation.VERTICAL);
 
-        Node node = lookup(".top-toolbar");
+        Node node = lookup(TOP_TOOLBAR_IDENTIFIER);
         if (node instanceof ToolBar) {
             ToolBar bar = (ToolBar) node;
             bar.getItems().add(separator);

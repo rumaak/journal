@@ -51,7 +51,7 @@ public class AppState {
         String journal_name = configuration.get("journal_name");
         fileTree = new FileTree(journal_name, Paths.get(""), ElementType.DIRECTORY);
         Path root = Paths.get(configuration.get("folder"));
-        CustomVisitor custom_visitor = new CustomVisitor(fileTree, root);
+        LoadTreeVisitor custom_visitor = new LoadTreeVisitor(fileTree, root);
 
         try {
             walkFileTree(root, custom_visitor);
