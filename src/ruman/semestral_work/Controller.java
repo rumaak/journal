@@ -22,6 +22,16 @@ import java.nio.file.Paths;
 import static java.nio.file.StandardOpenOption.CREATE;
 
 public class Controller {
+    private static final String NOTE_FILE = "note.png";
+    private static final String RESOURCE_DIR = "resources";
+
+    private static final String ADD_GROUP_BUTTON_FILE = "add_group_btn.png";
+    private static final String ADD_NOTE_BUTTON_FILE = "add_note_btn.png";
+    private static final String REMOVE_BUTTON_FILE = "remove_btn.png";
+    private static final String RENAME_BUTTON_FILE = "rename_btn.png";
+
+    private static final String EDITOR_FOREGROUND_IDENTIFIER = ".html-editor-foreground";
+
     @FXML Button add_group_button1;
     @FXML Button add_note_button1;
     @FXML Button remove_button1;
@@ -49,7 +59,7 @@ public class Controller {
         for (FileTree tree : root.getValue().descendants) {
             TreeItem<FileTree> t;
             if (tree.type == ElementType.FILE) {
-                t = new TreeItem<>(tree, getGraphic("note.png"));
+                t = new TreeItem<>(tree, getGraphic(NOTE_FILE));
             } else {
                 t = new TreeItem<>(tree);
             }
@@ -60,15 +70,15 @@ public class Controller {
     }
 
     ImageView getGraphic(String image_name) throws IOException {
-        Path path = Paths.get("resources").resolve(image_name);
+        Path path = Paths.get(RESOURCE_DIR).resolve(image_name);
         return new ImageView(new Image(Files.newInputStream(path)));
     }
 
     void setupTreeViewButtons() throws IOException {
-        add_group_button1.setGraphic(getGraphic("add_group_btn.png"));
-        add_note_button1.setGraphic(getGraphic("add_note_btn.png"));
-        remove_button1.setGraphic(getGraphic("remove_btn.png"));
-        rename_button1.setGraphic(getGraphic("rename_btn.png"));
+        add_group_button1.setGraphic(getGraphic(ADD_GROUP_BUTTON_FILE));
+        add_note_button1.setGraphic(getGraphic(ADD_NOTE_BUTTON_FILE));
+        remove_button1.setGraphic(getGraphic(REMOVE_BUTTON_FILE));
+        rename_button1.setGraphic(getGraphic(RENAME_BUTTON_FILE));
 
         Tooltip add_group_tooltip = new Tooltip("Add group");
         Tooltip add_note_tooltip = new Tooltip("Add note");
@@ -114,7 +124,7 @@ public class Controller {
     void setupEditor() {
         // New buttons should enable / disable together with original ones
         editor.focusedProperty().addListener((observable_value, a_boolean, t1) -> {
-            Node node = editor.lookup(".html-editor-foreground");
+            Node node = editor.lookup(EDITOR_FOREGROUND_IDENTIFIER);
             if (node instanceof ColorPicker) {
                 node.disabledProperty().addListener((observable_value1, a_boolean1, t11) -> {
                     editor.save_button.setDisable(observable_value1.getValue());
@@ -225,7 +235,7 @@ public class Controller {
         TreeItem<FileTree> new_item;
         if (type == ElementType.FILE) {
             try {
-                new_item = new TreeItem<>(new_file_tree, getGraphic("note.png"));
+                new_item = new TreeItem<>(new_file_tree, getGraphic(NOTE_FILE));
             } catch (IOException e) {
                 new_item = new TreeItem<>(new_file_tree);
                 e.printStackTrace();

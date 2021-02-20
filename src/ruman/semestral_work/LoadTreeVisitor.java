@@ -9,11 +9,11 @@ import java.nio.file.attribute.BasicFileAttributes;
 
 import static java.nio.file.FileVisitResult.CONTINUE;
 
-public class CustomVisitor extends SimpleFileVisitor<Path> {
+public class LoadTreeVisitor extends SimpleFileVisitor<Path> {
     FileTree file_tree;
     Path folder_path;
 
-    public CustomVisitor(FileTree file_tree, Path folder_path) {
+    public LoadTreeVisitor(FileTree file_tree, Path folder_path) {
         this.file_tree = file_tree;
         this.folder_path = folder_path;
     }
