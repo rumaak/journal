@@ -114,6 +114,12 @@ public class Controller {
         add_note_button1.setOnAction(arg0 -> addItem(ElementType.FILE));
         remove_button1.setOnAction(arg0 -> {
             TreeItem<FileTree> item = note_tree.getSelectionModel().getSelectedItem();
+
+            if (note_tree.getRoot() == item) {
+                Helpers.alertWarning("Root journal tree element cannot be deleted!");
+                return;
+            }
+
             TreeItem<FileTree> parent_item = item.getParent();
             FileTree tree = item.getValue();
             FileTree parent_tree = parent_item.getValue();
