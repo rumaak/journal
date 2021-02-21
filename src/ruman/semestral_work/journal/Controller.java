@@ -1,4 +1,4 @@
-package ruman.semestral_work;
+package ruman.semestral_work.journal;
 
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -21,6 +21,9 @@ import java.nio.file.Paths;
 
 import static java.nio.file.StandardOpenOption.CREATE;
 
+/**
+ * Manages setup of GUI components, primarily their action handlers.
+ */
 public class Controller {
     private static final String NOTE_FILE = "note.png";
     private static final String RESOURCE_DIR = "resources";
@@ -41,6 +44,9 @@ public class Controller {
 
     AppState app_state;
 
+    /**
+     * Create individual components, connect them and provide with handlers.
+     */
     @FXML
     void initialize() {
         setupAppState();
@@ -55,6 +61,11 @@ public class Controller {
         setupNoteTree();
     }
 
+    /**
+     * Fills {@link TreeView} component with items corresponding to journal entries and groups recursively.
+     *
+     * @param   root    {@link TreeItem} containing {@link FileTree} whose descendants we want to add
+     */
     void fillTreeView(TreeItem<FileTree> root) throws IOException {
         for (FileTree tree : root.getValue().descendants) {
             TreeItem<FileTree> t;
@@ -69,11 +80,20 @@ public class Controller {
         }
     }
 
+    /**
+     * Creates graphic corresponding to supplied to file name (file in {@link #RESOURCE_DIR}).
+     *
+     * @param   image_name  name of the image file
+     * @return  graphic object created from image file
+     */
     ImageView getGraphic(String image_name) throws IOException {
         Path path = Paths.get(RESOURCE_DIR).resolve(image_name);
         return new ImageView(new Image(Files.newInputStream(path)));
     }
 
+    /**
+     * Create buttons for TreeView management, assign handlers to them.
+     */
     void setupTreeViewButtons() throws IOException {
         add_group_button1.setGraphic(getGraphic(ADD_GROUP_BUTTON_FILE));
         add_note_button1.setGraphic(getGraphic(ADD_NOTE_BUTTON_FILE));
@@ -121,6 +141,9 @@ public class Controller {
         setTreeViewButtonsDisabled(true);
     }
 
+    /**
+     * Connects new buttons to the rest of editor buttons, sets action handler for {@link CustomHTMLEditor#save_button}.
+     */
     void setupEditor() {
         // New buttons should enable / disable together with original ones
         editor.focusedProperty().addListener((observable_value, a_boolean, t1) -> {
@@ -149,6 +172,10 @@ public class Controller {
         });
     }
 
+    /**
+     * Sets up selection functionality of {@link TreeView} component {@link #note_tree} (connects it with buttons that
+     * manage it and editor), assigns a custom cell factory to it.
+     */
     void setupNoteTree() {
         note_tree.getSelectionModel().selectedItemProperty().addListener((observable_value, file_tree_tree_item, t1) -> {
             if ((t1 != null) && (t1.getValue().type != ElementType.DIRECTORY)) {
@@ -175,6 +202,10 @@ public class Controller {
         note_tree.setCellFactory(file_tree_tree_view -> new FileTreeCellImpl());
     }
 
+    /**
+     * Initializes AppState instance corresponding to currently running Journal application with existing / new
+     * configuration, displays the journal in TreeView component.
+     */
     void setupAppState() {
         // Attempt to load existing config
         app_state = new AppState();
@@ -203,7 +234,7 @@ public class Controller {
         }
 
         app_state.loadTree();
-        TreeItem<FileTree> root = new TreeItem<>(app_state.fileTree);
+        TreeItem<FileTree> root = new TreeItem<>(app_state.file_tree);
         note_tree.setRoot(root);
 
         try {
@@ -213,6 +244,11 @@ public class Controller {
         }
     }
 
+    /**
+     * Sets the disabled property of buttons managing {@link TreeView}.
+     *
+     * @param   new_value   value the disabled property will be set to
+     */
     void setTreeViewButtonsDisabled(boolean new_value) {
         add_group_button1.setDisable(new_value);
         add_note_button1.setDisable(new_value);
@@ -220,6 +256,11 @@ public class Controller {
         rename_button1.setDisable(new_value);
     }
 
+    /**
+     * Add new {@link TreeItem} into {@link #note_tree} together with associated {@link FileTree}, save to filesystem.
+     *
+     * @param   type    type of newly added item
+     */
     void addItem(ElementType type) {
         // Get node to which we are going to append a child
         TreeItem<FileTree> tree_item = note_tree.getSelectionModel().getSelectedItem();
@@ -256,6 +297,13 @@ public class Controller {
         }
     }
 
+    /**
+     * Get a unique name for the new {@link TreeItem} based on already existing siblings.
+     *
+     * @param   type        type of item
+     * @param   file_tree   a {@link FileTree} to which we are trying to append a child
+     * @return  a name no other item on that level has
+     */
     String getNewName(ElementType type, FileTree file_tree) {
         StringBuilder new_name = new StringBuilder("");
         new_name.append("Item ");
@@ -288,6 +336,9 @@ public class Controller {
         return new_name_full.toString();
     }
 
+    /**
+     * Set keyboard shortcuts used in this application.
+     */
     public void setupKeyboardShortcuts() {
         // Setup ctrl+S combination to fire save button
         editor.getScene().getAccelerators().put(new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN), () -> {
@@ -297,10 +348,17 @@ public class Controller {
         });
     }
 
+    /**
+     * A custom implementation of {@link TreeCell} class that enables changes at the level of {@link AppState#file_tree}
+     * as well as on the filesystem level reflecting name change initiated by user.
+     */
     private final class FileTreeCellImpl extends TreeCell<FileTree> {
         // This field is used only when editing
         private TextField text_field;
 
+        /**
+         * Set up the cell for editing.
+         */
         @Override
         public void startEdit() {
             super.startEdit();
@@ -313,6 +371,9 @@ public class Controller {
             text_field.selectAll();
         }
 
+        /**
+         * Return to previous state if user cancels editing in some way.
+         */
         @Override
         public void cancelEdit() {
             super.cancelEdit();
@@ -320,6 +381,9 @@ public class Controller {
             setGraphic(getTreeItem().getGraphic());
         }
 
+        /**
+         * Redraws the component properly when needed.
+         */
         @Override
         public void updateItem(FileTree item, boolean empty) {
             super.updateItem(item, empty);
@@ -341,6 +405,9 @@ public class Controller {
             }
         }
 
+        /**
+         * Set up {@link TextField} used for editing purposes.
+         */
         private void createTextField() {
             text_field = new TextField(getString());
             text_field.setOnKeyReleased(t -> {
@@ -362,10 +429,22 @@ public class Controller {
             });
         }
 
+        /**
+         * Return String representation of {@link TreeItem}
+         *
+         * @return  String representation
+         */
         private String getString() {
             return getItem() == null ? "" : getItem().toString();
         }
 
+        /**
+         * Based on the user input, change note / group name (if it doesn't already exist).
+         *
+         * @param   tree_item   currently edited {@link TreeItem}
+         * @param   file_tree   {@link FileTree} corresponding to currently edited {@link TreeItem}
+         * @return  success of change
+         */
         private boolean changeItemName(TreeItem<FileTree> tree_item, FileTree file_tree) {
             String new_name = text_field.getText();
             if (file_tree.type == ElementType.FILE) {
@@ -391,6 +470,14 @@ public class Controller {
             return true;
         }
 
+        /**
+         * Check whether an element with same name already exists.
+         *
+         * @param   file_tree   {@link FileTree} corresponding to currently edited {@link TreeItem}
+         * @param   parent      parent of currently edited {@link TreeItem}
+         * @param   new_name    new name
+         * @return  identically named element already exists
+         */
         private boolean alreadyExists(FileTree file_tree, TreeItem<FileTree> parent, String new_name) {
             for (FileTree d : parent.getValue().descendants) {
                 if (d.name.equals(new_name) && (d != file_tree)) {
