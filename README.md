@@ -43,16 +43,39 @@ A short user guide describing how the application is supposed to be used.
 - delete everything inside the directory (or move it to new location)
 - in the local repository clone, delete .config file
 
-
 ### Example
 To ilustrate how the journal application is used, let us go over two simple usage examples.
 
 ##### Example of existing journal
 In the root directory of this repository, there is an example journal already set up (test_journal), select it and click `open`.
 
-TODO add image
+![](docs/images/existing_journal_select.png)
 
+A journal window should appear. Let's look into some already existing note - navigate to `Journal`|`subdir2`|`subsubdir` and select `note_nested_nested` (double click on group to expand it, click once on note to select it). Contents of the note can be seen in editor.
 
+![TODO](docs/images/existing_journal_show_note.png)
 
+We may now modify the contents of this note. Let's add a new line saying "Maybe three." and let's make it bold. Save it by clicking on save button or by ctrl+s.
+
+![TODO](docs/images/existing_journal_edit_note.png)
+
+Now we can view another note somewhere in the journal (by selecting it). If we were to return to the note we edited, we could see that it still contains our newly added text. We might also close and open the journal application, and see that it is still there.
 
 ##### Example creating new journal
+Running the application for the first time (or after deleting the `.config` file) will cause a directory chooser window to pop up. Let's create a new directory called `test_journal_empty` and open it via directory chooser.
+
+![TODO](docs/images/new_journal_create.png)
+
+This will cause a window with empty journal to appear.
+
+![TODO](docs/images/new_journal_create.png)
+
+Because empty journal isn't very entertaining, we shall add some groups to it. Let's add groups named `work` and `school` - that can be done by clicking on `add group` button twice and then renaming new items using `rename` button (all buttons are above journal tree). Then we are going to select the `school` group and add two notes (using an `add note` button), which we are going to name `Java` and `Cpp` respectively.
+
+![TODO](docs/images/new_journal_create_groups_notes.png)
+
+We could edit added notes, but we've already covered that. Instead, we realize that we've gotten older and we don't go to school anymore, so the time has come to delete the `school` group. To do that, simply select the `school` group and click on `delete` button above the journal tree.
+
+![TODO](docs/images/new_journal_delete.png)
+
+All changes are saved, we can close the journal.
