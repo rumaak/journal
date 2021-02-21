@@ -8,7 +8,6 @@
     <property name="lib" location="lib"/>
 
     <target name="init">
-        <echo>Java/JVM version: ${ant.java.version}</echo>
         <mkdir dir="${build}"/>
     </target>
 
