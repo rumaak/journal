@@ -68,7 +68,7 @@ Running the application for the first time (or after deleting the `.config` file
 
 This will cause a window with empty journal to appear.
 
-![](docs/images/new_journal_create.png)
+![](docs/images/new_journal_open.png)
 
 Because empty journal isn't very entertaining, we shall add some groups to it. Let's add groups named `work` and `school` - that can be done by clicking on `add group` button twice and then renaming new items using `rename` button (all buttons are above journal tree). Then we are going to select the `school` group and add two notes (using an `add note` button), which we are going to name `Java` and `Cpp` respectively.
 
